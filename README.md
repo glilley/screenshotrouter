@@ -34,3 +34,6 @@ Trigger a screenshot with your configured shortcut (default: `⌃⌥⌘4`). Inst
 - **Trigger shortcut** → activates screenshot capture; folder picker appears after you select a region
 - **1–9 keys** → instantly move the screenshot to that folder
 - **Re-trigger shortcut while "Saved" is showing** → dismisses it
+
+<img width="599" height="520" alt="image" src="https://github.com/user-attachments/assets/f56eb319-6003-46f5-a1a4-64b7e62eb456" />
+
