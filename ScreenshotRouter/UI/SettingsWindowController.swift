@@ -69,6 +69,7 @@ class SettingsWindowController: NSWindowController, NSTableViewDataSource, NSTab
         tableView.delegate = self
         tableView.rowHeight = 24
         tableView.allowsMultipleSelection = false
+        tableView.registerForDraggedTypes([.string])
 
         let col = NSTableColumn(identifier: NSUserInterfaceItemIdentifier("folder"))
         col.title = "Folder"
@@ -155,6 +156,29 @@ class SettingsWindowController: NSWindowController, NSTableViewDataSource, NSTab
     // MARK: - NSTableViewDataSource
 
     func numberOfRows(in tableView: NSTableView) -> Int { folders.count }
+
+    func tableView(_ tableView: NSTableView, pasteboardWriterForRow row: Int) -> NSPasteboardWriting? {
+        let item = NSPasteboardItem()
+        item.setString(String(row), forType: .string)
+        return item
+    }
+
+    func tableView(_ tableView: NSTableView, validateDrop info: NSDraggingInfo, proposedRow row: Int, proposedDropOperation op: NSTableView.DropOperation) -> NSDragOperation {
+        if op == .above { return .move }
+        return []
+    }
+
+    func tableView(_ tableView: NSTableView, acceptDrop info: NSDraggingInfo, row: Int, dropOperation: NSTableView.DropOperation) -> Bool {
+        guard let str = info.draggingPasteboard.string(forType: .string),
+              let fromRow = Int(str) else { return false }
+        var toRow = row
+        if fromRow < toRow { toRow -= 1 }
+        guard fromRow != toRow else { return false }
+        preferences.moveFolder(from: fromRow, to: toRow)
+        folders = preferences.folders
+        tableView.reloadData()
+        return true
+    }
 
     // MARK: - NSTableViewDelegate
 
